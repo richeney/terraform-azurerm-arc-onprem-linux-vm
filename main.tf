@@ -24,7 +24,7 @@ locals {
 
   arc_tags_string = local.azcmagent_connect && try(length(var.arc.tags), 0) > 0 ? (
     join(",", [for key, value in var.arc.tags :
-    "${key}=${value}"])
+    "${key}=${replace(value, " ", "_")}"])
     ) : (
     null
   )

@@ -26,13 +26,23 @@ cloud_final_modules:
 
 runcmd:
   - echo "Starting azcmagent connect runcmd steps at $(date +%H:%M:%S)"
-  - [ azcmagent, connect,
+  - [ echo, "Running as $(whoami) and logging to /var/opt/azcmagent/log/azcmagent.log"]
+  - [ echo, azcmagent, connect, --verbose,
+    --service-principal-id, "${service_principal_appid}",
+    --service-principal-secret, 'redacted',
     --tenant-id, "${tenant_id}",
     --subscription-id, "${subscription_id}",
-    --service-principal-id, "${service_principal_appid}",
-    --service-principal-secret, "${service_principal_secret}",
     --resource-group, "${resource_group_name}",
     --location, "${location}",
     --tags, "${tags}"
     ]
-  - echo "Starting azcmagent connect runcmd steps at $(date +%H:%M:%S)"
+  - [ azcmagent, connect, --verbose,
+    --service-principal-id, "${service_principal_appid}",
+    --service-principal-secret, "${service_principal_secret}",
+    --tenant-id, "${tenant_id}",
+    --subscription-id, "${subscription_id}",
+    --resource-group, "${resource_group_name}",
+    --location, "${location}",
+    --tags, "${tags}"
+    ]
+  - echo "Finished azcmagent connect runcmd steps at $(date +%H:%M:%S)"
