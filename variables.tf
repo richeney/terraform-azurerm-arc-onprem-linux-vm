@@ -17,7 +17,7 @@ variable "asg_id" {
 variable "resource_group_name" {
   description = "Name for the resource group. Required."
   type        = string
-  default     = "arc-onprem-servers"
+  default     = "onprem_servers"
 }
 
 //=============================================================
@@ -66,7 +66,7 @@ variable "arc" {
 
 variable "admin_username" {
   description = "VM admin username."
-  default     = "arcadmin"
+  default     = "onpremadmin"
 }
 
 variable "admin_ssh_public_key_file" {
@@ -80,8 +80,14 @@ variable "admin_ssh_public_key" {
   default     = ""
 }
 
+variable "public_ip" {
+  description = "Boolean to control public IP creation."
+  type        = bool
+  default     = false
+}
+
 variable "dns_label" {
-  description = "Shortname for the public IP's FQDN."
+  description = "Shortname for the public IP's FQDN. Public IP will not be created if unset,"
   type        = string
   default     = null
 }

@@ -1,13 +1,6 @@
 #cloud-config
 #
-# This is an cloud-init file to install the azcmagent.
-#
-#
-#
-# Stop the walinux agent and b) configure the firewall to block the Instance Metadata Service.
-#
-# This allows azcmagent to be installed and the VM to be onboarded to Azure Arc
-# as if it was an on prem virtual machine.
+# This is an cloud-init file to connect the VM to Azure Arc using the azcmagent.
 #
 # Don't create files in /tmp during the early stages that cloud-init works in. Use /var/run.
 # Generated runcmd script run as root: sudo cat /var/lib/cloud/instance/scripts/runcmd

@@ -1,7 +1,6 @@
 #cloud-config
 #
-# Installs azure-cli
-# Adapted from: https://github.com/azurecitadel/arc-onprem-servers/blob/main/linux/cloud_init/azure_cli.yaml
+# Installs the terraform binary via apt
 
 merge_how:
  - name: list
