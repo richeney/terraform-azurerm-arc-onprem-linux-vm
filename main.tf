@@ -117,6 +117,8 @@ resource "azurerm_linux_virtual_machine" "onprem" {
   location            = var.location
   tags                = var.tags
 
+  depends_on = [ azurerm_network_interface_application_security_group_association.onprem ]
+
   computer_name                   = var.name
   admin_username                  = var.admin_username
   disable_password_authentication = true
