@@ -35,30 +35,30 @@ locals {
 
   // Construct the input steps for the cloud init based on the booleans.
 
-  cloud_init_agent_imds = [{
+  cloudinit_agent_imds = [{
     "name"    = "remove_azure_agent_block_imds"
     "content" = templatefile("${path.module}/cloud_init/azure_agent_imds.tpl", { hostname = var.name })
   }]
 
-  cloud_init_download = local.azcmagent_download ? [{
+  cloudinit_download = local.azcmagent_download ? [{
     "name"    = "azcmagent_download"
     "content" = file("${path.module}/cloud_init/azcmagent_install.yaml")
   }] : []
 
-  cloud_init_connect = local.azcmagent_connect ? [{
+  cloudinit_connect = local.azcmagent_connect ? [{
     "name"    = "azcmagent_connect"
     "content" = templatefile("${path.module}/cloud_init/azcmagent_connect.tpl", local.arc)
   }] : []
 
-  //  cloud_init_azure_cli = [{
+  //  cloudinit_azure_cli = [{
   //      "name"    = "install_azure_cli"
   //      "content" = file("${path.module}/cloud_init/azure_cli.yaml")
   //    }]
   //
 
-  cloud_init = concat(local.cloud_init_agent_imds, local.cloud_init_download, local.cloud_init_connect)
+  cloud_init = concat(local.cloudinit_agent_imds, local.cloudinit_download, local.cloudinit_connect)
 
-  cloud_init_steps = {
+  cloudinit_steps = {
     for n in range(length(local.cloud_init)) :
     format("step%02d", n + 1) => local.cloud_init[n]
   }
@@ -66,12 +66,12 @@ locals {
 
 
 
-data "template_cloudinit_config" "multipart" {
+data "cloudinit_config" "multipart" {
   gzip          = false
   base64_encode = false
 
   dynamic "part" {
-    for_each = local.cloud_init_steps
+    for_each = local.cloudinit_steps
 
     content {
       filename     = part.value.name
@@ -137,12 +137,23 @@ resource "azurerm_linux_virtual_machine" "onprem" {
     storage_account_type = "Standard_LRS"
   }
 
+  # Don't provision the Azure Agent - needs to be missing for Azure Arc agent installation
+  provision_vm_agent         = false
+  allow_extension_operations = false
+
+
+
   // custom_data = filebase64("${path.module}/example_cloud_init")
   // custom_data = base64encode(templatefile("${path.module}/azure_arc_cloud_init.tpl", { hostname = var.name }))
-  custom_data = base64encode(data.template_cloudinit_config.multipart.rendered)
+  custom_data = base64encode(data.cloudinit_config.multipart.rendered)
 
   admin_ssh_key {
     username   = var.admin_username
     public_key = local.admin_ssh_public_key
+  }
+
+  // Pointless, but impossible to not have an identity
+  identity {
+    type = "SystemAssigned"
   }
 }

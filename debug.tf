@@ -1,7 +1,7 @@
 // Debugging
 
 output "cloud_init" {
-  value = data.template_cloudinit_config.multipart.rendered
+  value = data.cloudinit_config.multipart.rendered
 }
 
 output "azcmagent_download" {
