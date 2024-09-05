@@ -81,6 +81,7 @@ data "cloudinit_config" "multipart" {
   }
 }
 
+# Boolean controlled public IP
 resource "azurerm_public_ip" "onprem" {
   for_each            = toset(var.public_ip ? ["pip"] : [])
   name                = "${local.name}-pip"
